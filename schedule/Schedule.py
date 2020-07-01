@@ -13,9 +13,9 @@ TYPES_OF_DUTY = {0:'Test', 1:'CT/MR', 3:'ER', 4:'CR', 5:'VS',
 
 
 
-
 def export_to_excel(first_choice, other_choice):
     print('正在開啟Excel並輸出排班資料...')
+    
     wb = xw.Book()
     sht = wb.sheets[0]  
 
@@ -24,7 +24,7 @@ def export_to_excel(first_choice, other_choice):
     sht.range('A1').value = '建議班表'
     sht.range('A2').expand().value = first_choice
     sht.autofit()
-    # 定義最後一行
+        # 定義最後一行
     last_row = wb.sheets[0].range('A' + str(wb.sheets[0].cells.last_cell.row)).end('up').row
     
     # 如果有 other choices, 輸出其他排班
@@ -35,7 +35,7 @@ def export_to_excel(first_choice, other_choice):
             sht.range('A'+str(last_row+1)).expand().value = items
 
     now = datetime.datetime.now().strftime("%m%d%H%M%S")  # now time
-    wb.save(os.path.join(os.sys.path[0], f'排班資料_{now}.xlsx'))
+    wb.save(os.path.join(os.getcwd(), f'排班資料_{now}.xlsx'))
     print('儲存完成')
 
 
@@ -867,7 +867,7 @@ def optimization2(preliminary_list, df_updated, duty_type):
 def main():
     # cleanse the data, determine if there is violation
     global df
-    df = pd.read_excel(os.path.join(os.sys.path[0], 'test.xlsm'))
+    df = pd.read_excel(os.path.join(os.getcwd(), 'test.xlsm'))
     df, type_to_generate = data_cleansing(df)
     violation, df_updated = is_violation(df,type_to_generate)
 
