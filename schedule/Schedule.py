@@ -13,7 +13,6 @@ TYPES_OF_DUTY = {0:'Test', 1:'CT/MR', 3:'ER', 4:'CR', 5:'VS',
 
 
 
-
 def export_to_excel(first_choice, other_choice):
     print('正在開啟Excel並輸出排班資料...')
     wb = xw.Book()
@@ -862,6 +861,7 @@ def optimization2(preliminary_list, df_updated, duty_type):
     #list_location_std_sorted.reverse()
     
     return list_location_std_sorted
+
 
 
 def main():
