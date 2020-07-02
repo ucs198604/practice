@@ -864,6 +864,7 @@ def optimization2(preliminary_list, df_updated, duty_type):
     return list_location_std_sorted
 
 
+
 def main():
     # cleanse the data, determine if there is violation
     global df
