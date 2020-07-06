@@ -90,7 +90,7 @@ open_file_bt.grid(column=2, row=2, rowspan=2)
 
 FILE_NAME = ''
 FILE_DIR = ''
-NUM_TO_RUN = ''
+NUM_TO_RUN = []
 check_start = True
 def start_arrange():
     global check_start
