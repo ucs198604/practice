@@ -1,24 +1,21 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jul  6 18:49:42 2020
-
-@author: User
-"""
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jul  5 20:25:04 2020
 
 @author: yukuo
+@email: ucs198604@gmail.com
 """
+VERSION = 0.1
 
-import pandas as pd
+# need installation
+import pandas as pd  #
+import numpy as np  #
+import xlwings as xw  #  also pip install xlrd
+import datetime #
+
 import random
-import numpy as np
 import copy # for deep copy
-import xlwings as xw
-import datetime
 import os
 import warnings
 warnings.filterwarnings("ignore")  
@@ -306,7 +303,7 @@ def data_cleansing(df):
     for i in range(5,len(df.columns)):
         df = df.rename(columns={df.columns[i]:str(i-4)}) 
     
-    return df, type_to_generate
+    return df #,  type_to_generate # GUI, no need to define types here
 
 
 def is_violation(df, duty_type_array):
@@ -1048,7 +1045,7 @@ def main():
     global TYPES_OF_DUTY
     global FILE_NAME
     global NUM_TO_RUN
-    
+    global DUTY_LIST  # from GUI
     df = pd.read_excel(FILE_NAME)
 
     # define types of duties
@@ -1056,7 +1053,10 @@ def main():
                      6:'Other6', 7:'Other7', 8:'Other8', 9:'Other9'}  # no type 2
 
     # cleanse the data, determine if there is violation
-    df, type_to_generate = data_cleansing(df)
+    type_to_generate = sorted(DUTY_LIST, reverse=True)
+    
+    #df, type_to_generate = data_cleansing(df)
+    df = data_cleansing(df)
     violation, df_updated = is_violation(df,type_to_generate)
 
     if len(type_to_generate)>2:
@@ -1097,13 +1097,19 @@ def main():
         export_to_excel(first_choice, other_choice)
 
 
+# GUI 介面，不用
 #if __name__ == "__main__":
 #    main()
         
-        
+#
+#
+#   GUI 介面
+#
+#        
 
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
 
 window = tk.Tk() #一個叫做window的新視窗
 window.title('Duty arranger')
@@ -1111,13 +1117,14 @@ window.geometry('600x140')
 
 
 # Duty box
-duty_list=[]
+global DUTY_LIST
+DUTY_LIST=[]
 def duty_box():
     # duty check
-    global duty_list
+    global DUTY_LIST
     duty_check = [int(varC[i].get()) for i in range(5)]
     # make duty list
-    duty_list = [[0,1,2,3,4][i] for i,val in enumerate(duty_check) if val ==1]
+    DUTY_LIST = [[0,1,2,3,4][i] for i,val in enumerate(duty_check) if val ==1]
     if sum(duty_check)==2:
         if int(varC[0].get()) ==0:
             C0.configure(state='disabled')
@@ -1165,15 +1172,12 @@ s.grid(column=1, row=0, rowspan=2, columnspan =2)
 
 
 # get filename and directory
-#file_label = tk.Label(window, text="", bg='light gray', wraplength=100,
-#                      font=('Arial', 10), width=40, height=5)
-#file_label.pack()
 file_var = tk.StringVar()
 file_entry = tk.Entry(window, textvariable= file_var, state = 'disable', 
                       width =22, font=('Arial', 12))
 file_entry.grid(column=1, row=2, rowspan=2, padx=3, pady=3)
 
-import os
+# import os
 def get_filename():
     full_path = filedialog.askopenfilename(initialdir = os.getcwd(),title = "請選擇檔案",
                                           filetypes = (("xlsm files","*.xlsm"),("all files","*.*")))
@@ -1184,45 +1188,51 @@ open_file_bt = tk.Button(window, text='開啟檔案', command=get_filename, font
 open_file_bt.grid(column=2, row=2, rowspan=2)
 
 
+# 定義 檔案完整路徑，檔案資料夾位置，
 FILE_NAME = ''
 FILE_DIR = ''
-NUM_TO_RUN = []
+NUM_TO_RUN = 0
+
+
+# 檢查是否都完成開始前的條件：選擇要執行的 duty type，選擇檔案位置
 check_start = True
 def start_arrange():
     global check_start
-    global duty_list
+    global DUTY_LIST
     global FILE_NAME
     global NUM_TO_RUN
     global FILE_DIR
     check_start = True
     check_l = True
     check_f =True
-    if duty_list == []:
+    if DUTY_LIST== []:
         check_start = False
         check_l = False
     if file_var.get() =='':
         check_start = False
         check_f = False
     if check_f == False and check_l == False:
-        print('請選擇欲執行的值班類別與排班檔案')
+        messagebox.showwarning('','請選擇 [欲執行的值班類別] 與 [排班檔案]')
+        #print('請選擇欲執行的值班類別與排班檔案')
     elif check_f == False:
-        print('請選擇排班檔案')
+        messagebox.showwarning('','請選擇 [排班檔案]')
+        #print('請選擇排班檔案')
     elif check_l == False:
-        print('請選擇欲執行的值班類別')
+        messagebox.showwarning('','請選擇 [欲執行的值班類別]')
+        #print('請選擇欲執行的值班類別')
     if check_start == True:
         # main, file path, duty_list, numbers to run
         FILE_NAME = file_var.get()
         NUM_TO_RUN = s.get()
         parsing = [index for index, item in enumerate(FILE_NAME) if item =="/"]
         FILE_DIR = FILE_NAME[0:(parsing[-1]+1)]
-        main()
-    #print(f"file path={file_var.get()}")
-    #print(f"duty list={duty_list}")
-    #print(f"num={s.get()}")
+        main()  # start running main function
+
+
+
 start_arrange = tk.Button(window, text='開始排班', command=start_arrange, font=('Arial', 14))
 start_arrange.grid(column=3, row=0, columnspan=2, rowspan=4, sticky=tk.N+tk.S, padx=10, pady=20)
 window.mainloop() #進入等待處理物件的狀態
 
-# LOAD filename and numbers to run
 
 
