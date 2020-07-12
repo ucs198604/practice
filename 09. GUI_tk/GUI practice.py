@@ -33,6 +33,8 @@ var1.set('test')
 e1 = tk.Entry(window, textvariable=var1)
 e1.pack()
 
+print(e1.get())
+
 # 先 scrollbar=, 再 text
 scrollbar = tk.Scrollbar(window)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -46,8 +48,6 @@ t1.insert(tk.END, "baby\n don't \n go \n away \n")
 scrollbar.config(command=t1.yview)
 t1.config(yscrollcommand=scrollbar.set)
 
-from tkinter import messagebox
-messagebox.showinfo('test', 'testmessage')
 
 
 window.mainloop()
