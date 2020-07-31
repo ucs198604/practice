@@ -21,8 +21,8 @@ chrome_options.add_argument('--headless')  #規避google bug
 chrome_options.add_argument('--disable-gpu')
 
 # 指定 chromedriver location, create browser object, add headless option
-chromedriver = '/usr/local/bin/chromedriver'
-# chromedriver = "C:\webdriver\chromedriver.exe"
+#chromedriver = '/usr/local/bin/chromedriver'
+chromedriver = "C:\webdriver\chromedriver.exe"
 browser = webdriver.Chrome(chromedriver, options=chrome_options)
 
 
